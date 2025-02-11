@@ -152,7 +152,8 @@ public class WebSecurity {
                         .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/users/status/check","GET")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/users/login")).permitAll())
+                        .requestMatchers(new AntPathRequestMatcher("/users/login")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/actuator/**","GET")).permitAll())
                 .addFilter(authenticationFilter)
                 .authenticationManager(authenticationManager)
                 .sessionManagement((session) -> session
