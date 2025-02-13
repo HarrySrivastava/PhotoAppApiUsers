@@ -1,5 +1,6 @@
 package com.appdeveloper.photoapp.api.users.service;
 
+import com.appdeveloper.photoapp.api.users.data.AlbumsServiceClient;
 import com.appdeveloper.photoapp.api.users.data.UserEntity;
 import com.appdeveloper.photoapp.api.users.data.UsersRepository;
 import com.appdeveloper.photoapp.api.users.shared.UserDto;
@@ -27,14 +28,15 @@ public class UsersServiceImpl implements UsersService{
 
     UsersRepository usersRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder;
-    RestTemplate restTemplate;
+  //  RestTemplate restTemplate;
     Environment environment;
+    AlbumsServiceClient albumsServiceClient;
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository,RestTemplate restTemplate,Environment environment,BCryptPasswordEncoder bCryptPasswordEncoder)
+    public UsersServiceImpl(UsersRepository usersRepository,AlbumsServiceClient albumsServiceClient,Environment environment,BCryptPasswordEncoder bCryptPasswordEncoder)
     {
         this.usersRepository=usersRepository;
         this.bCryptPasswordEncoder=bCryptPasswordEncoder;
-        this.restTemplate=restTemplate;
+        this.albumsServiceClient=albumsServiceClient;
         this.environment=environment;
     }
     @Override
@@ -68,9 +70,11 @@ public class UsersServiceImpl implements UsersService{
          String albumsUrl = String.format(environment.getProperty("albums.url"), userId);
      //   String albumsUrl=String.format("http://USERS-WS/users/%s/albums",userId);
 
-        ResponseEntity<List<AlbumResponseModel>> albumsListResponse = restTemplate.exchange(albumsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
+     /*   ResponseEntity<List<AlbumResponseModel>> albumsListResponse = restTemplate.exchange(albumsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
         });
-        List<AlbumResponseModel> albumsList = albumsListResponse.getBody();
+        List<AlbumResponseModel> albumsList = albumsListResponse.getBody(); */
+        List<AlbumResponseModel>albumsList= albumsServiceClient.getAlbums(userId);
+
 
         userDto.setAlbums(albumsList);
         return userDto;
