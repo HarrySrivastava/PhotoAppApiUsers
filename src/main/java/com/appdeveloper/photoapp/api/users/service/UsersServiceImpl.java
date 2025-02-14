@@ -67,7 +67,7 @@ public class UsersServiceImpl implements UsersService{
         UserDto userDto=new ModelMapper().map(userEntity,UserDto.class);
 
 
-         String albumsUrl = String.format(environment.getProperty("albums.url"), userId);
+     //    String albumsUrl = String.format(environment.getProperty("albums.url"), userId);
      //   String albumsUrl=String.format("http://USERS-WS/users/%s/albums",userId);
 
      /*   ResponseEntity<List<AlbumResponseModel>> albumsListResponse = restTemplate.exchange(albumsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {

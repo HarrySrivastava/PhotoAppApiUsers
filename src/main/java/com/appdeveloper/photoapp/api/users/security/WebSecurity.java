@@ -34,8 +34,6 @@ public class WebSecurity {
     }
 
 
-
-
 //    @Bean
 //    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 //
@@ -127,8 +125,6 @@ public class WebSecurity {
 //
 
 
-
-
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
@@ -150,11 +146,14 @@ public class WebSecurity {
 
         http.authorizeHttpRequests((authz) -> authz
                         .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/users/status/check","GET")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/users/status/check", "GET")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/users/login")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/actuator/**","GET")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/users/**","GET,PUT,DELETE")).permitAll())
+                        .requestMatchers(new AntPathRequestMatcher("/actuator/**", "GET")).permitAll()
+                        // .requestMatchers(new AntPathRequestMatcher("/users/**","GET,PUT,DELETE")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/users/**", "GET")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/users/**", "PUT")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/users/**", "DELETE")).permitAll())
                 .addFilter(authenticationFilter)
                 .authenticationManager(authenticationManager)
                 .sessionManagement((session) -> session

@@ -15,6 +15,7 @@ public class UserDto  implements Serializable {
     private String password;
     private String userId;
     private String encryptedPassword;
+    private List<AlbumResponseModel> albums;
 
     public List<AlbumResponseModel> getAlbums() {
         return albums;
@@ -24,7 +25,7 @@ public class UserDto  implements Serializable {
         this.albums = albums;
     }
 
-    private List<AlbumResponseModel> albums;
+
 
     public String getFirstName() {
         return firstName;
