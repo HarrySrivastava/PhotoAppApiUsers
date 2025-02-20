@@ -5,9 +5,12 @@ import com.appdeveloper.photoapp.api.users.data.UserEntity;
 import com.appdeveloper.photoapp.api.users.data.UsersRepository;
 import com.appdeveloper.photoapp.api.users.shared.UserDto;
 import com.appdeveloper.photoapp.api.users.ui.model.AlbumResponseModel;
+import feign.FeignException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
@@ -31,6 +34,7 @@ public class UsersServiceImpl implements UsersService{
   //  RestTemplate restTemplate;
     Environment environment;
     AlbumsServiceClient albumsServiceClient;
+    Logger logger= LoggerFactory.getLogger(this.getClass());
     @Autowired
     public UsersServiceImpl(UsersRepository usersRepository,AlbumsServiceClient albumsServiceClient,Environment environment,BCryptPasswordEncoder bCryptPasswordEncoder)
     {
@@ -73,7 +77,10 @@ public class UsersServiceImpl implements UsersService{
      /*   ResponseEntity<List<AlbumResponseModel>> albumsListResponse = restTemplate.exchange(albumsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
         });
         List<AlbumResponseModel> albumsList = albumsListResponse.getBody(); */
-        List<AlbumResponseModel>albumsList= albumsServiceClient.getAlbums(userId);
+            logger.debug("Before calling Albums microservices");
+            List<AlbumResponseModel>albumsList = albumsServiceClient.getAlbums(userId);
+            logger.debug("After calling Albums microservices");
+
 
 
         userDto.setAlbums(albumsList);
