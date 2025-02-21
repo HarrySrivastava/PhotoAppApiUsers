@@ -63,7 +63,7 @@ public class PhotoAppApiUsersApplication {
 	{
 		return new FeignErrorDecoder();
 	}
-	@Bean
+/*	@Bean
 	@Profile("production")
 	public String createProductionBean()
 	{
@@ -76,15 +76,15 @@ public class PhotoAppApiUsersApplication {
 	{
 		System.out.println("Development Bean created.   myapplication.environment = " +environment.getProperty("myapplication.environment"));
 		return "Development Bean";
-	}
+	} */
 
-	@Bean
-	@Profile("!production")
+/*	@Bean
+	@Profile("staging")
 	public String createNotProductionBean()
 	{
-		System.out.println("Default Bean created.  myapplication.environment = " +environment.getProperty("myapplication.environment"));
-		return " Not Production Bean";
-	}
+		System.out.println("Staging Bean created.  myapplication.environment = " +environment.getProperty("myapplication.environment"));
+		return " Staging Bean";
+	}*/
 
 }
 

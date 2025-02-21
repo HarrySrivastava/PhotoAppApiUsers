@@ -15,7 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
-import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -145,15 +144,19 @@ public class WebSecurity {
         http.csrf((csrf) -> csrf.disable());
 
         http.authorizeHttpRequests((authz) -> authz
-                        .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
+                      //  .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/users/**")).access(
+                        new WebExpressionAuthorizationManager("hasIpAddress('"+environment.getProperty("gateway.ip")+"')"))
                         .requestMatchers(new AntPathRequestMatcher("/users/status/check", "GET")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/users/login")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/actuator/**", "GET")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/actuator/**", "GET")).permitAll())
                         // .requestMatchers(new AntPathRequestMatcher("/users/**","GET,PUT,DELETE")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/users/**", "GET")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/users/**", "PUT")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/users/**", "DELETE")).permitAll())
+                       // .requestMatchers(new AntPathRequestMatcher("/users/**", "GET")).permitAll()
+                      //  .requestMatchers(new AntPathRequestMatcher("/users/**", "PUT")).permitAll()
+                     //   .requestMatchers(new AntPathRequestMatcher("/users/**", "DELETE")).permitAll())
+                .addFilter(new AuthorizationFilter(authenticationManager,environment))
+                .addFilter(authenticationFilter)
                 .addFilter(authenticationFilter)
                 .authenticationManager(authenticationManager)
                 .sessionManagement((session) -> session
