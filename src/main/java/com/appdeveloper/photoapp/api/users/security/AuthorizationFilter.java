@@ -1,9 +1,11 @@
 package com.appdeveloper.photoapp.api.users.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import com.appsdevloperblog.JwtAuthorities.JwtClaimsParser;
+//import io.jsonwebtoken.Claims;
+//import io.jsonwebtoken.JwtParser;
+//import io.jsonwebtoken.Jwts;
+//import io.jsonwebtoken.security.Keys;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -58,21 +61,24 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
         if(tokenSecret==null) return null;
 
-        byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
-        SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
+//        byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
+//        SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
+//
+//        JwtParser parser = Jwts.parser()
+//                .verifyWith(secretKey)
+//                .build();
+//
+//        Claims claims = parser.parseSignedClaims(token).getPayload();
+//        String userId = (String) claims.get("sub");
 
-        JwtParser parser = Jwts.parser()
-                .verifyWith(secretKey)
-                .build();
-
-        Claims claims = parser.parseSignedClaims(token).getPayload();
-        String userId = (String) claims.get("sub");
+        JwtClaimsParser jwtClaimsParser=new JwtClaimsParser(token,tokenSecret);
+        String userId=jwtClaimsParser.getJwtSubject();
 
         if (userId == null) {
             return null;
         }
 
-        return new UsernamePasswordAuthenticationToken(userId, null, new ArrayList<>());
+        return new UsernamePasswordAuthenticationToken(userId, null, jwtClaimsParser.getUserAuthorities());
 
     }
 }

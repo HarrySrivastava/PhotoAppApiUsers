@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
+@EnableMethodSecurity(prePostEnabled = true)
 @Configuration
 @EnableWebSecurity
 public class WebSecurity {
@@ -144,7 +145,7 @@ public class WebSecurity {
         http.csrf((csrf) -> csrf.disable());
 
         http.authorizeHttpRequests((authz) -> authz
-                      //  .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/users/**")).access(
                         new WebExpressionAuthorizationManager("hasIpAddress('"+environment.getProperty("gateway.ip")+"')"))
                         .requestMatchers(new AntPathRequestMatcher("/users/status/check", "GET")).permitAll()
@@ -156,7 +157,7 @@ public class WebSecurity {
                       //  .requestMatchers(new AntPathRequestMatcher("/users/**", "PUT")).permitAll()
                      //   .requestMatchers(new AntPathRequestMatcher("/users/**", "DELETE")).permitAll())
                 .addFilter(new AuthorizationFilter(authenticationManager,environment))
-                .addFilter(authenticationFilter)
+              //  .addFilter(authenticationFilter)
                 .addFilter(authenticationFilter)
                 .authenticationManager(authenticationManager)
                 .sessionManagement((session) -> session

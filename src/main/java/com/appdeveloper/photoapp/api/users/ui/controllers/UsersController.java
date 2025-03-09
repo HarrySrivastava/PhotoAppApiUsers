@@ -13,6 +13,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,11 +40,21 @@ public class UsersController {
         CreateUserResponseModel returnValue = modelMapper.map(createdUser, CreateUserResponseModel.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
     }
-
+    // @PostAuthorize("principal ==returnObject.body.userId")
+   //  @PreAuthorize("principal== #userId")
+    @PreAuthorize("hasRole('ADMIN') or principal== #userId")
     @GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserResponseModel> getUser(@PathVariable("userId") String userId) {
         UserDto userDto = usersService.getUserByUserId(userId);
         UserResponseModel returnValue = new ModelMapper().map(userDto, UserResponseModel.class);
         return ResponseEntity.status(HttpStatus.OK).body(returnValue);
+    }
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('PROFILE_DELETE') or principal== #userId")
+    @DeleteMapping("/{userId}")
+    public String deleteUser(@PathVariable("userId") String userId)
+    {
+        //Delete  User Logic here
+        return "Deleting User with Id:" + userId;
+
     }
 }

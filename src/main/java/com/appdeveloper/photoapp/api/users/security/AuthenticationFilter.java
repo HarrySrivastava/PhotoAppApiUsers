@@ -4,9 +4,9 @@ import com.appdeveloper.photoapp.api.users.service.UsersService;
 import com.appdeveloper.photoapp.api.users.shared.UserDto;
 import com.appdeveloper.photoapp.api.users.ui.model.LoginRequestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureAlgorithm;
+//import io.jsonwebtoken.Jwts;
+//import io.jsonwebtoken.security.Keys;
+//import io.jsonwebtoken.security.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 
-import static io.jsonwebtoken.security.SignatureAlgorithm.*;
+//import static io.jsonwebtoken.security.SignatureAlgorithm.*;
 
 //public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 //   private UsersService userService;
@@ -128,6 +128,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         Instant now = Instant.now();
 
         String token = Jwts.builder()
+                .claim("scope",auth.getAuthorities())
                 .subject(userDetails.getUserId())
                 .expiration(Date.from(now.plusMillis(Long.parseLong(environment.getProperty("token.expiration_time")))))
                 .issuedAt(Date.from(now))
@@ -136,6 +137,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         System.out.println("--------------------------->>>>>>>>>>>");
         System.out.println(Long.parseLong(environment.getProperty("token.expiration_time")));
         System.out.println(environment.getProperty("token.secret"));
+        System.out.println(environment.getProperty("gateway.ip"));
 
         res.addHeader("token", token);
         res.addHeader("userId", userDetails.getUserId());
